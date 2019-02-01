@@ -20,6 +20,7 @@ before(function() {
 });
 
 afterEach(function() {
+  fetchMock.reset();
   queue.testMode.clear();
 });
 
@@ -64,7 +65,6 @@ describe("Scrape shows job", () => {
         // Second is scrape next page
         expect(queue.testMode.jobs[1].type).to.equal(SCRAPE_SHOWS_JOB_NAME);
         expect(queue.testMode.jobs[1].data.page).to.equal(1);
-        fetchMock.reset();
 
         done();
       }

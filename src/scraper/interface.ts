@@ -1,12 +1,3 @@
-type Days =
-  | "Monday"
-  | "Tuesday"
-  | "Wednesday"
-  | "Thursday"
-  | "Friday"
-  | "Saturday"
-  | "Sunday";
-
 export interface Cast {
   person: {
     id: number;
@@ -61,7 +52,7 @@ export interface Show {
   officialSite: string;
   schedule: {
     time: string;
-    days: Days[];
+    days: string[];
   };
   rating: { average: number | null };
   weight: number;
