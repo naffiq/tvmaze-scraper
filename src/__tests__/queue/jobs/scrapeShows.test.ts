@@ -6,14 +6,17 @@ import {
   pushScrapeShowsToQueue,
   SCRAPE_SHOWS_JOB_NAME,
   SCRAPE_SHOW_CAST_JOB_NAME
-} from "../../queue/jobs";
-import { scrapeShowsJob } from "../../queue/watch";
-import { mockShows } from "../mock/shows";
+} from "../../../queue/jobs";
 
-const queue = kue.createQueue();
+import { mockShows } from "../../mock/shows";
+import { scrapeShowsJob } from "../../../queue/jobs/scrapeShows";
+
+const queue = kue.createQueue({
+  disableSearch: true
+});
 
 before(function() {
-  queue.testMode.enter(false);
+  queue.testMode.enter();
 });
 
 afterEach(function() {
@@ -45,7 +48,7 @@ describe("Scrape shows job", () => {
       body: mockShows
     });
 
-    scrapeShowsJob(
+    scrapeShowsJob(queue)(
       {
         data: {
           page: 0
@@ -61,6 +64,29 @@ describe("Scrape shows job", () => {
         // Second is scrape next page
         expect(queue.testMode.jobs[1].type).to.equal(SCRAPE_SHOWS_JOB_NAME);
         expect(queue.testMode.jobs[1].data.page).to.equal(1);
+        fetchMock.reset();
+
+        done();
+      }
+    );
+  });
+
+  it("should reschedule scrape-shows", function(done) {
+    this.timeout(3000);
+    fetchMock.get("http://api.tvmaze.com/shows?page=0", 429);
+
+    scrapeShowsJob(queue)(
+      {
+        data: {
+          page: 0
+        }
+      } as kue.Job,
+      () => {
+        expect(queue.testMode.jobs.length).to.equal(1);
+
+        // Job should be rescheduled
+        expect(queue.testMode.jobs[0].type).to.equal(SCRAPE_SHOWS_JOB_NAME);
+        expect(queue.testMode.jobs[0].data.page).to.equal(0);
 
         done();
       }
