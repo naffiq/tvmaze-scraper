@@ -1,0 +1,26 @@
+{
+  "name": "tvmaze-scraper",
+  "version": "1.0.0",
+  "description": "API wrapper around tvmaze that provides list of shows and actors",
+  "main": "dist/index.js",
+  "repository": "https://github.com/naffiq/tvmaze-scraper",
+  "author": "naffiq",
+  "license": "MIT",
+  "private": false,
+  "scripts": {
+    "build": "tsc",
+    "watch": "tsc -w"
+  },
+  "dependencies": {
+    "kue": "^0.11.6",
+    "mongoose": "^5.4.8",
+    "node-fetch": "^2.3.0"
+  },
+  "devDependencies": {
+    "@types/kue": "^0.11.10",
+    "@types/mongoose": "^5.3.12",
+    "@types/node": "^10.12.21",
+    "@types/node-fetch": "^2.1.4",
+    "typescript": "^3.3.1"
+  }
+}
